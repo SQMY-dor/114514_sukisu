@@ -5,7 +5,7 @@ on:
       KERNEL_SUFFIX:
         description: '内核名称修改(可改中文和emoji)'
         required: true
-        default: '-酷安FutabaWa'
+        default: ''
       KERNEL_TIME:
        description: "内核构建日期更改(默认为原厂)"
        required: true
@@ -18,14 +18,15 @@ on:
       enable_feature_y:
        description: "是否启用lz4kd"
        required: false
-       default: false
+       default: true
        type: boolean
       enable_feature_z:
        description: "是否添加风驰驱动"
        required: false
-       default: false
+       default: true
        type: boolean
-      
+  schedule:
+    - cron: '0 0 * * *'   
        
 
 
@@ -311,3 +312,11 @@ jobs:
         with:
          name: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro
          path: ./AnyKernel3/*
+      - name: create github release
+        id: new_release
+        uses: softprops/action-gh-release@v2.0.8
+        with:
+          name: latest
+          make_latest: true
+          files: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro
+          path: ./AnyKernel3/*
