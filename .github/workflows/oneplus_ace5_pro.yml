@@ -319,4 +319,3 @@ jobs:
           name: latest
           make_latest: true
           files: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro
-          path: ./AnyKernel3/*
