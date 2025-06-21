@@ -320,4 +320,4 @@ jobs:
           files: ./AnyKernel3/*
           make_latest: true
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
