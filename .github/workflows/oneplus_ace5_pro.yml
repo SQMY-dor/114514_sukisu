@@ -320,4 +320,4 @@ jobs:
           files: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip
           make_latest: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
