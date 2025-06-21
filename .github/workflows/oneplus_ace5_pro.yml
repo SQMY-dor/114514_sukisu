@@ -5,7 +5,7 @@ on:
       KERNEL_SUFFIX:
         description: '内核名称修改(可改中文和emoji)'
         required: true
-        default: 'android15-8-g013ec21bba94-abogki383916444-4k'
+        default: 'android15-8-g013ec21bba94-abogki383916444'
       KERNEL_TIME:
        description: "内核构建日期更改(默认为原厂)"
        required: true
@@ -312,10 +312,12 @@ jobs:
         with:
          name: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro
          path: ./AnyKernel3/*
-      - name: create github release
-        id: new_release
-        uses: softprops/action-gh-release@v2.0.8
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: latest
+          tag_name: "release-${{ github.run_id }}"
+          name: "SuKiSu ${{ env.KSUVER }} oneplus_ace5_pro"
+          files: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip
           make_latest: true
-          files: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
