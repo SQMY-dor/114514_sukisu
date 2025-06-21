@@ -317,7 +317,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "latest"
+          tag_name: "SuKiSu ${{ env.KSUVER }} oneplus_ace5_pro"
           name: "SuKiSu ${{ env.KSUVER }} oneplus_ace5_pro"
           files: ./SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip
           make_latest: true
