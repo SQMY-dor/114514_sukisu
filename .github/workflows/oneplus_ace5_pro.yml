@@ -52,8 +52,8 @@ jobs:
           
       - name: Configure Git
         run: |
-         git config --global user.name "Futaba"
-         git config --global user.email "3199167602@qq.com"
+         git config --global user.name "SQMY-dor"
+         git config --global user.email "2798005047@qq.com"
 
       - name: Install dependencies
         run: |
