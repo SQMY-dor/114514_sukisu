@@ -314,27 +314,12 @@ jobs:
         with:
          name: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro
          path: ./AnyKernel3/*
-          # 步骤1：生成唯一后缀 (时间戳+短提交ID)
-      - name: Generate unique suffix
-        id: version_suffix
-        run: |
-            TIMESTAMP=$(date +'%y%m%d-%H%M%S')
-            COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
-            echo "UNIQUE_SUFFIX=${TIMESTAMP}-${COMMIT_SHA_SHORT}" >> $GITHUB_ENV
-            echo "Generated suffix: ${TIMESTAMP}-${COMMIT_SHA_SHORT}"
-
-        # 步骤2：组合唯一版本号 (KSUVER + 唯一后缀)
-      - name: Create combined version
-        run: |
-            echo "FULL_VERSION=${{ env.KSUVER }}-${{ env.UNIQUE_SUFFIX }}" >> $GITHUB_ENV
-            echo "Full version: ${{ env.KSUVER }}-${{ env.UNIQUE_SUFFIX }}"
-
         # 步骤3：创建GitHub Release
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v${{ env.FULL_VERSION }}"
-          name: "SuKiSu ${{ env.FULL_VERSION }} (oneplus_ace5_pro)"
+          tag_name: "v${{ env.KSUVER }}"
+          name: "SuKiSu ${{ env.KSUVEE }} (oneplus_ace5_pro)"
           files: ./SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip
           make_latest: false  # 禁用自动设为最新版
         env:
