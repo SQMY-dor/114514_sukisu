@@ -321,15 +321,8 @@ jobs:
           tag_name: "v${{ env.KSUVER }}"
           name: "SuKiSu ${{ env.KSUVEE }} (oneplus_ace5_pro)"
           files: ./SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip
-          make_latest: false  # 禁用自动设为最新版
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-         #- name: Create GitHub Release
-        #uses: softprops/action-gh-release@v2
-        #with:
-          #tag_name: "SuKiSu ${{ env.KSUVER }} oneplus_ace5_pro"
-          #name: "SuKiSu ${{ env.KSUVER }} oneplus_ace5_pro"
-          #files: ./SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip
-          #make_latest: true
         #env:
           #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
