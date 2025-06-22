@@ -86,7 +86,7 @@ jobs:
       - name: Set up SukiSU
         run: |
          cd kernel_workspace/kernel_platform
-         curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/susfs-1.5.8/kernel/setup.sh" | bash -s susfs-1.5.8
+         curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/susfs-1.5.7/kernel/setup.sh" | bash -s susfs-1.5.7
          cd ./KernelSU
          KSU_VERSION=$(expr $(/usr/bin/git rev-list --count main) "+" 10606)
          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
@@ -221,7 +221,7 @@ jobs:
           # Add SUSFS configuration settings
           echo "CONFIG_KSU_SUSFS=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
-          echo "CONFIG_KSU_SUSFS_SUS_PATH=n" >> ./common/arch/arm64/configs/gki_defconfig
+          echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
           echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
@@ -307,7 +307,7 @@ jobs:
          rm -rf ./AnyKernel3/push.sh
          cp kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image ./AnyKernel3/
          cd AnyKernel3
-         zip -r ../SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip ./*
+         zip -r ../SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro_bbr_nokpm.zip ./*
          cd ..
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
@@ -320,9 +320,7 @@ jobs:
         with:
           tag_name: "v${{ env.KSUVER }}"
           name: "SuKiSu ${{ env.KSUVEE }} (oneplus_ace5_pro)"
-          files: ./SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip
+          files: ./SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro_bbr_nokpm.zip
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        #env:
-          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
