@@ -293,12 +293,36 @@ jobs:
 
       - name: Build Kernel
         run: |
+
           export KBUILD_BUILD_TIMESTAMP="${{ github.event.inputs.KERNEL_TIME }}"
           export PATH="/usr/lib/llvm-19/bin:$PATH"
           export PATH="/usr/lib/ccache:$PATH"
           sudo apt install libelf-dev
           cd kernel_workspace/kernel_platform/common
-          make -j$(nproc --all) LLVM=1 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=clang-19 RUSTC=../../prebuilts/rust/linux-x86/1.73.0b/bin/rustc PAHOLE=../../prebuilts/kernel-build-tools/linux-x86/bin/pahole LD=ld.lld-19 HOSTLD=ld.lld-19 O=out KCFLAGS+=-O2 gki_defconfig all
+          make clean && make mrproper
+          rm -rf out
+          mkdir -p out
+          make ARCH=arm64 SUBARCH=arm64 O=out \
+              LLVM=1 \
+              LLVM_IAS=1 \
+              CC="ccache clang" \
+              CXX="ccache clang++" \
+              HOSTCC="ccache clang" \
+              HOSTCXX="ccache clang++" \
+              CLANG_TRIPLE=aarch64-linux-gnu- \
+              CROSS_COMPILE=aarch64-linux-gnu- \
+              CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+              gki_defconfig
+          make ARCH=arm64 SUBARCH=arm64 -j$(nproc --all) O=out \
+              LLVM=1 \
+              LLVM_IAS=1 \
+              CC="ccache clang" \
+              CXX="ccache clang++" \
+              HOSTCC="ccache clang" \
+              HOSTCXX="ccache clang++" \
+              CLANG_TRIPLE=aarch64-linux-gnu- \
+              CROSS_COMPILE=aarch64-linux-gnu- \
+              CROSS_COMPILE_ARM32=arm-linux-gnueabi-
           
       - name: Apply Linux Patch
         run: |
@@ -311,7 +335,7 @@ jobs:
          
       - name: Make AnyKernel3
         run: |
-         git clone https://github.com/Kernel-SU/AnyKernel3.git --depth=1      
+         git clone https://github.com/SQMY-dor/AnyKernel3.git --depth=1      
          rm -rf ./AnyKernel3/.git
          rm -rf ./AnyKernel3/push.sh
          cp kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image ./AnyKernel3/
