@@ -298,6 +298,7 @@ jobs:
           export PATH="/usr/lib/ccache:$PATH"
           sudo apt install libelf-dev
           cd kernel_workspace/kernel_platform/common
+          sed -i 's/-OKI${config_localversion}/-android15-8-g013ec21bba94-abogki383916444-4k/g' scripts/setlocalversion
           make clean && make mrproper
           rm -rf out
           mkdir -p out
