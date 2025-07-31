@@ -282,20 +282,19 @@ jobs:
          rm -rf ./sched_ext/.git
          cd common/kernel/sched  
 
-      - name: Install Clang 19.1
+      - name: Install Android Clang
         run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 19
-          sudo apt install -y clang-19 lld-19 lldb-19
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
-          sudo update-alternatives --install /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-19 100
+          wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r536225.tar.gz -O clang-r536225.tar.gz
+          mkdir -p /opt/android-clang
+          tar -xzf clang-r536225.tar.gz -C /opt/android-clang
+          export PATH="/opt/android-clang/bin:$PATH"
 
       - name: Build Kernel
         run: |
-
+          export KBUILD_BUILD_USER="brokestar"
+          export KBUILD_BUILD_HOST="zakozako"
           export KBUILD_BUILD_TIMESTAMP="${{ github.event.inputs.KERNEL_TIME }}"
-          export PATH="/usr/lib/llvm-19/bin:$PATH"
+          export PATH="/opt/android-clang/bin:$PATH"
           export PATH="/usr/lib/ccache:$PATH"
           sudo apt install libelf-dev
           cd kernel_workspace/kernel_platform/common
