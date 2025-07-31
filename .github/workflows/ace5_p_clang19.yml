@@ -105,6 +105,8 @@ jobs:
 
       - name: Initialize repo and sync
         run: |
+         # 设置repo镜像
+         git config --global url."https://mirrors.tuna.tsinghua.edu.cn/git/AOSP/".insteadOf "https://android.googlesource.com/"
          mkdir kernel_workspace && cd kernel_workspace
          repo init -u https://github.com/aa123330/kernel_manifest.git -b refs/heads/oneplus/${{ github.event.inputs.CPU }} -m ${{ github.event.inputs.FEIL }}.xml --depth=1
          repo --trace sync -c -j$(nproc --all ) --no-tags
@@ -117,15 +119,15 @@ jobs:
           curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-main
           cd ./KernelSU
           KSU_VERSION=$(expr $(/usr/bin/git rev-list --count main) "+" 10606)
-          echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
-          export KSU_VERSION=$KSU_VERSION
+          echo "KSU_VERSION=${KSU_VERSION}" >> $GITHUB_ENV
+          echo "KSUVER=${KSU_VERSION}" >> $GITHUB_ENV
           sed -i "s/DKSU_VERSION=12800/DKSU_VERSION=${KSU_VERSION}/" kernel/Makefile
 
       - name: Set up SUSFS & apply patches
         run: |
          set -e
          cd kernel_workspace
-         git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-${{ inputs.ANDROID_VERSION }}-${{ inputs.KERNEL_VERSION }}
+         git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}
          git clone --depth=1 https://github.com/SukiSU-Ultra/SukiSU_patch.git
          git clone https://github.com/WildPlusKernel/kernel_patches.git
          git clone https://github.com/zzh20188/GKI_KernelSU_SUSFS.git zzh_patch
@@ -224,7 +226,7 @@ jobs:
           cd kernel_workspace/
           mkdir clang19
           cd clang19
-          curl -LO https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240723-release/Clang-19.0.0git-20240723.tar.gz
+          curl -LO https://mirrors.tuna.tsinghua.edu.cn/github-release/ZyCromerZ/Clang/Clang-19.0.0git-20240723-release/Clang-19.0.0git-20240723.tar.gz
           tar -xvf Clang-19.0.0git-20240723.tar.gz
           cd ..
    
@@ -290,26 +292,32 @@ jobs:
          strings kernel_workspace/kernel_platform/common/out/vmlinux | grep "UTC"
 
       - name: Make AnyKernel3
+        id: make_anykernel
         run: |
-         git clone https://github.com/SQMY-dor/AnyKernel3.git --depth=1      
+         # 克隆和准备 AnyKernel3
+         git clone https://github.com/SQMY-dor/AnyKernel3.git --depth=1
          rm -rf ./AnyKernel3/.git
          rm -rf ./AnyKernel3/push.sh
          cp kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image ./AnyKernel3/
+         
+         # 创建压缩包
          cd AnyKernel3
-         zip -r ../SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip ./*
+         zip -r "../SuKiSu-ace5pro-${{ github.run_id }}.zip" ./*
          cd ..
+         echo "zip_file=SuKiSu-ace5pro-${{ github.run_id }}.zip" >> $GITHUB_OUTPUT
+
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-         name: SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro
+         name: SuKiSu-ace5pro-${{ github.run_id }}
          path: ./AnyKernel3/*
-        # 步骤3：创建GitHub Release
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: "v${{ env.KSUVER }}"
-          name: "SuKiSu ${{ env.KSUVEE }} (oneplus_ace5_pro)"
-          files: ./SuKiSu_${{ env.KSUVER }}_oneplus_ace5_pro.zip
+          tag_name: "v${{ github.run_id }}"
+          name: "SuKiSu Build ${{ github.run_id }} (oneplus_ace5_pro)"
+          files: ./${{ steps.make_anykernel.outputs.zip_file }}
           make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
