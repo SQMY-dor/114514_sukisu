@@ -221,6 +221,7 @@ jobs:
 
       - name: Install Clang 19.0
         run: |
+          cd kernel_workspace/
           mkdir clang19
           cd clang19
           curl -LO https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240723-release/Clang-19.0.0git-20240723.tar.gz
